@@ -2,8 +2,13 @@ import {db} from './db/index.js';
 import { todosTable } from './db/schema.js';
 import OpenAI from "openai";
 import readlineSync from 'readline-sync';
+import dotenv from 'dotenv';
 
 const client = new OpenAI();
+
+dotenv.config();
+
+client.apiKey = process.env.OPENAI_API_KEY;
 
 
 //Tools
@@ -84,7 +89,7 @@ while(true){
     const chat = await client.chat.completions.create({
         model:'gpt-4o-mini',
         messages:messages,
-        response_format:{type:'json_object'},
+        response_format: { type: 'json_object' },
     });
 
     const result = chat.choices[0].message.content;
@@ -92,7 +97,7 @@ while(true){
 
     const action= JSON.parse(result);
 
-    if(action.type==='action'){
+    if(action.type==='output'){
         console.log(`${action.output}`);
         break;
     }
